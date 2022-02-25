@@ -22,7 +22,7 @@ router.get('/:id', function(req, res) {
 
 
 // delete // 
-router.delete('/delete/:id', function(req, res) {
+router.delete('/:id', function(req, res) {
     tab = [] ;
     for (let pas = 0; pas < members.length; pas++) {
         if(members[pas].id==req.params.id){
@@ -40,14 +40,46 @@ router.delete('/delete/:id', function(req, res) {
 
 // create 
 
-router.post('/create',(req , res )=>{
-    const data = req.body
-    members.push(data)
-    res.send(members)
-    res.end()
-
+router.post('/',(req , res )=>{
+    const id = req.params.id
+    const member = {
+        "id": req.body.id,
+        "name": req.body.name,
+        "email": req.body.email,
+        "status": req.body.status
+    }
+    members.push(member)
+    res.json(members)
 })
 
 ///end create 
+
+router.put('/:id', (req , res )=>{
+    const id =  req.params.id 
+    const found  = members.some((member)=>{
+             member.id == id
+    })
+
+    if (!found){
+         for( let i = 0 ;  i<members.length ; i++){
+             if(members[i].id==id){
+                 const data = members[i]
+                 data.id = req.body.id
+                 data.name = req.body.name
+                 data.email = req.body.email
+                 data.status = req.body.status
+                 res.json(data)
+             }
+         }
+        
+    }else{
+           res.json(
+               {
+                "alert ": "data not found  !",
+               }
+           )
+           console.log(found);
+    }
+})
 
 module.exports = router;
